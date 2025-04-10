@@ -2,15 +2,16 @@
 
 A modern web application that analyzes URLs to detect potential phishing attempts using machine learning and security features analysis.
 
-## Features
+## 🔒 Features
 
-- Modern UI with deep blue and purple color theme
-- URL analysis for phishing detection
-- Detailed security information display
-- Real-time URL validation and suggestions
-- Advanced error handling with helpful user feedback
-- Responsive design for all devices
-
+- **Modern UI Design**: Sleek dark theme with  vibrant orange accents for a professional tech aesthetic
+- **ML-Powered Phishing Detection**: Advanced algorithms to identify fraudulent URLs with high accuracy
+- **Detailed Security Analysis**: Comprehensive breakdown of URL security features and potential vulnerabilities
+- **Real-time Validation**: Instant feedback as you type with smart URL suggestions
+- **Enhanced Trust Indicators**: Visual confidence metrics for legitimate domains with animated elements
+- **Responsive Design**: Fully optimized for all devices from desktop to mobile
+- **Advanced Error Handling**: User-friendly error messages with helpful recommendations
+- **Live Security Dashboard**: Real-time metrics showing threat statistics and protection status
 ## Installation
 
 1. Clone the repository
