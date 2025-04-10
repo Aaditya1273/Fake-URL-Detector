@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Phishing Detector - Offline Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="page-background"></div>
+    
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-shield-alt brand-icon neon-glow"></i>
+                <span class="brand-text">Cyber<span style="color: var(--primary-color);">Shield</span></span>
+                <span class="brand-subtitle">Phishing Detection System</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="alert alert-warning mb-4">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle me-2 pulse-animation"></i>
+                        <strong>Offline Demo Mode</strong>
+                    </div>
+                    <p class="mb-0 mt-2">This is a demonstration of the UI only. The server-side analysis is not available in this demo.</p>
+                </div>
+                
+                <div class="card main-card mb-4 floating-animation">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Advanced URL Security Analysis</h5>
+                        <p class="text-muted text-center mb-4">Enter a URL to analyze for phishing and security threats</p>
+                        
+                        <form id="urlForm" class="mb-4">
+                            <div class="input-group url-input-group">
+                                <span class="input-group-text"><i class="fas fa-link"></i></span>
+                                <input type="url" id="urlInput" class="form-control" placeholder="https://example.com" required>
+                                <button type="submit" class="btn btn-primary btn-3d">
+                                    <i class="fas fa-shield-alt me-2"></i>
+                                    Analyze
+                                </button>
+                            </div>
+                            <div class="small text-muted mt-2">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Enter a complete URL including http:// or https://
+                            </div>
+                            <div class="url-examples mt-2">
+                                <span class="small text-muted me-2">Examples:</span>
+                                <button type="button" class="btn btn-sm btn-link example-url p-0 me-2" data-url="https://google.com">google.com</button>
+                                <button type="button" class="btn btn-sm btn-link example-url p-0 me-2" data-url="https://facebook.com">facebook.com</button>
+                                <button type="button" class="btn btn-sm btn-link example-url p-0" data-url="https://github.com">github.com</button>
+                            </div>
+                        </form>
+
+                        <div id="loading" class="text-center d-none">
+                            <div class="spinner">
+                                <div class="double-bounce1"></div>
+                                <div class="double-bounce2"></div>
+                            </div>
+                            <p class="text-muted mt-2">Analyzing URL security...</p>
+                        </div>
+
+                        <div id="results" class="d-none result-animation">
+                            <div class="alert mb-4" id="resultAlert">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-info-circle me-2 pulse-animation"></i>
+                                    <span id="resultText">Results will appear here</span>
+                                </div>
+                            </div>
+                            
+                            <div class="card feature-card mb-4">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="fas fa-shield-alt me-2 pulse-animation"></i>Security Features</h6>
+                                    <ul class="list-group list-group-flush custom-list-group" id="securityFeatures">
+                                        <!-- Security features will be added here -->
+                                    </ul>
+                                </div>
+                            </div>
+                                
+                            <div class="card feature-card" id="websiteInfo">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="fas fa-globe me-2 pulse-animation"></i>Website Information</h6>
+                                    <div id="websiteDetails">
+                                        <!-- Website details will be added here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center text-muted mt-3 footer-text">
+                    <p>Powered by Advanced Machine Learning • <span style="color: var(--primary-color);">Protect yourself from phishing attacks</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Demo trusted domains
+        const TRUSTED_DOMAINS = [
+            'google.com', 'microsoft.com', 'apple.com', 'amazon.com', 
+            'facebook.com', 'instagram.com', 'twitter.com', 'linkedin.com',
+            'github.com', 'paypal.com', 'netflix.com', 'youtube.com'
+        ];
+
+        document.getElementById('urlForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = document.getElementById('urlInput').value;
+            
+            if (!url) {
+                showErrorMessage("Please enter a URL to analyze");
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('loading').classList.remove('d-none');
+            document.getElementById('results').classList.add('d-none');
+            
+            // Simulate server processing time
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('d-none');
+                
+                try {
+                    // Simple demo analysis just for UI demonstration
+                    const parsedUrl = new URL(url.startsWith('http') ? url : `https://${url}`);
+                    const domain = parsedUrl.hostname.toLowerCase();
+                    
+                    // Clean up domain (remove www. prefix and any port)
+                    let cleanDomain = domain;
+                    if (cleanDomain.startsWith('www.')) {
+                        cleanDomain = cleanDomain.substring(4);
+                    }
+                    if (cleanDomain.includes(':')) {
+                        cleanDomain = cleanDomain.split(':')[0];
+                    }
+                    
+                    // First check for exact trusted domain matches
+                    const exactTrustedMatch = TRUSTED_DOMAINS.some(trusted => 
+                        cleanDomain === trusted.toLowerCase()
+                    );
+                    
+                    // Check if this is a trusted domain
+                    const isTrusted = exactTrustedMatch || TRUSTED_DOMAINS.some(trusted => 
+                        cleanDomain.includes(trusted) && 
+                        cleanDomain.endsWith(trusted.substring(trusted.indexOf('.')))
+                    );
+                    
+                    // Check if this looks suspicious
+                    const isSuspicious = !exactTrustedMatch && (
+                        cleanDomain.includes('login') || 
+                        cleanDomain.includes('secure') || 
+                        cleanDomain.includes('account') ||
+                        /paypa[l1]/i.test(cleanDomain) ||
+                        /g[o0]{2}g[l1]e/i.test(cleanDomain) ||
+                        /faceb[o0]{2}k/i.test(cleanDomain) ||
+                        // Prevent linkedin.com from being flagged as suspicious
+                        (/linked[i1]n/i.test(cleanDomain) && !cleanDomain.includes('linkedin.com'))
+                    );
+                    
+                    const resultAlert = document.getElementById('resultAlert');
+                    const resultText = document.getElementById('resultText');
+                    const resultIcon = resultAlert.querySelector('i');
+                    
+                    // Add animation class to icon
+                    resultIcon.classList.add('pulse-animation');
+                    
+                    // Update the result based on our simple analysis
+                    if (isSuspicious && !isTrusted) {
+                        resultAlert.className = 'alert alert-danger mb-4';
+                        resultIcon.className = 'fas fa-exclamation-triangle text-danger me-2 pulse-animation';
+                        resultText.textContent = `This URL appears to be a phishing attempt (85% confidence)`;
+                        
+                        updateSecurityFeatures({
+                            ssl_cert: url.startsWith('https'),
+                            domain_age: '2 days',
+                            security_headers: {},
+                            blacklist_status: 'Potentially Suspicious'
+                        });
+                    } else if (isTrusted) {
+                        resultAlert.className = 'alert alert-success mb-4';
+                        resultIcon.className = 'fas fa-check-circle text-success me-2 pulse-animation';
+                        resultText.textContent = `This URL appears to be legitimate (95% confidence)`;
+                        
+                        updateSecurityFeatures({
+                            ssl_cert: true,
+                            domain_age: '8+ years',
+                            security_headers: {
+                                'Strict-Transport-Security': true,
+                                'X-Content-Type-Options': true
+                            },
+                            blacklist_status: 'Clear'
+                        });
+                    } else {
+                        resultAlert.className = 'alert alert-info mb-4';
+                        resultIcon.className = 'fas fa-info-circle text-info me-2 pulse-animation';
+                        resultText.textContent = `This domain doesn't match known patterns (60% confidence)`;
+                        
+                        updateSecurityFeatures({
+                            ssl_cert: url.startsWith('https'),
+                            domain_age: 'Unknown',
+                            security_headers: {},
+                            blacklist_status: 'Not on known lists'
+                        });
+                    }
+                    
+                    // Show results with animation
+                    document.getElementById('results').classList.remove('d-none');
+                    setTimeout(() => {
+                        document.getElementById('results').classList.add('show');
+                    }, 10);
+                } catch (error) {
+                    console.error('Error:', error);
+                    showErrorMessage("Invalid URL format. Please enter a complete URL.");
+                }
+            }, 1500); // Simulate 1.5 seconds processing time
+        });
+        
+        // Helper function to show an error message with options
+        function showErrorMessage(message) {
+            const resultAlert = document.getElementById('resultAlert');
+            const resultText = document.getElementById('resultText');
+            const resultIcon = resultAlert.querySelector('i');
+            
+            resultAlert.className = 'alert alert-info mb-4';
+            resultIcon.className = 'fas fa-info-circle text-info me-2 pulse-animation';
+            
+            // More detailed and helpful error message
+            resultText.innerHTML = `
+                <div class="error-message">
+                    <p>${message}</p>
+                    <div class="mt-3">
+                        <p class="mb-2"><strong>Possible reasons:</strong></p>
+                        <ul class="text-start">
+                            <li>The URL format might be incorrect</li>
+                            <li>This is a demo version with limited functionality</li>
+                            <li>Only formatting validation is performed in the demo</li>
+                        </ul>
+                    </div>
+                    <p class="mt-3">Please try with a complete URL including http:// or https://</p>
+                    <div class="mt-3">
+                        <button class="btn btn-outline-primary btn-sm retry-btn">
+                            <i class="fas fa-redo-alt me-2"></i>Try Again
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm ms-2 clear-btn">
+                            <i class="fas fa-eraser me-2"></i>Clear
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Add event listeners to the buttons
+            setTimeout(() => {
+                const retryBtn = document.querySelector('.retry-btn');
+                const clearBtn = document.querySelector('.clear-btn');
+                
+                if (retryBtn) {
+                    retryBtn.addEventListener('click', () => {
+                        document.getElementById('urlForm').dispatchEvent(new Event('submit'));
+                    });
+                }
+                
+                if (clearBtn) {
+                    clearBtn.addEventListener('click', () => {
+                        document.getElementById('urlInput').value = '';
+                        document.getElementById('results').classList.add('d-none');
+                    });
+                }
+            }, 100);
+            
+            // Show minimal security info in case of error
+            document.getElementById('securityFeatures').innerHTML = `
+                <li class="list-group-item">
+                    <i class="fas fa-info-circle text-info me-2"></i> 
+                    No detailed information available
+                </li>
+                <li class="list-group-item">
+                    <i class="fas fa-lightbulb text-warning me-2 pulse-animation"></i>
+                    <strong>Tip:</strong> Make sure the URL includes the protocol (http:// or https://)
+                </li>
+            `;
+            
+            // Show results
+            document.getElementById('results').classList.remove('d-none');
+            setTimeout(() => {
+                document.getElementById('results').classList.add('show');
+            }, 10);
+        }
+        
+        function updateSecurityFeatures(securityInfo) {
+            const securityFeatures = document.getElementById('securityFeatures');
+            securityFeatures.innerHTML = '';
+            
+            if (!securityInfo) {
+                securityFeatures.innerHTML = `<li class="list-group-item"><i class="fas fa-info-circle text-info me-2"></i> No security information available</li>`;
+                return;
+            }
+            
+            const features = [
+                { icon: 'fa-lock', text: 'SSL Certificate', value: securityInfo.ssl_cert ? 'Present' : 'Missing', status: securityInfo.ssl_cert ? 'success' : 'danger' },
+                { icon: 'fa-clock', text: 'Domain Age', value: securityInfo.domain_age || 'Unknown', status: 'info' },
+                { icon: 'fa-shield-alt', text: 'Security Headers', value: (securityInfo.security_headers && typeof securityInfo.security_headers === 'object') ? 
+                    Object.keys(securityInfo.security_headers).length + ' present' : 'Unknown', status: 'info' },
+                { icon: 'fa-ban', text: 'Blacklist Status', value: securityInfo.blacklist_status || 'Unknown', status: 'info' }
+            ];
+            
+            features.forEach(feature => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item';
+                li.innerHTML = `
+                    <i class="fas ${feature.icon} text-${feature.status} me-2"></i>
+                    <span>${feature.text}: ${feature.value}</span>
+                `;
+                securityFeatures.appendChild(li);
+            });
+        }
+
+        // URL example handling
+        document.querySelectorAll('.example-url').forEach(button => {
+            button.addEventListener('click', () => {
+                const url = button.getAttribute('data-url');
+                document.getElementById('urlInput').value = url;
+            });
+        });
+
+        // URL validation helper
+        document.getElementById('urlInput').addEventListener('input', function(e) {
+            const input = e.target;
+            const value = input.value.trim();
+            
+            // Add protocol if missing
+            if (value && !value.match(/^https?:\/\//i)) {
+                const suggestion = document.createElement('div');
+                suggestion.className = 'url-suggestion mt-2';
+                suggestion.innerHTML = `
+                    <small class="text-primary">
+                        <i class="fas fa-lightbulb me-1 pulse-animation"></i>
+                        Did you mean <a href="#" class="suggested-url">https://${value}</a>?
+                    </small>
+                `;
+                
+                // Remove any existing suggestion
+                const existingSuggestion = input.parentElement.parentElement.querySelector('.url-suggestion');
+                if (existingSuggestion) {
+                    existingSuggestion.remove();
+                }
+                
+                // Add the new suggestion
+                input.parentElement.parentElement.appendChild(suggestion);
+                
+                // Add click event to the suggested URL
+                const suggestedUrl = suggestion.querySelector('.suggested-url');
+                suggestedUrl.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    input.value = `https://${value}`;
+                    suggestion.remove();
+                });
+            } else {
+                // Remove suggestion if the URL now has a protocol
+                const suggestion = input.parentElement.parentElement.querySelector('.url-suggestion');
+                if (suggestion) {
+                    suggestion.remove();
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

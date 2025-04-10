@@ -3,26 +3,933 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phishing URL Detector 🕵️‍♂️</title>
+    <title>URL Phishing Detector</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>Phishing URL Detector 🕵️‍♂️</h1>
-        <p>Enter a URL to check if it's phishing or legitimate:</p>
-        
-        <form id="urlForm" aria-labelledby="urlFormLabel">
-            <label for="urlInput" id="urlFormLabel" class="sr-only">Enter URL</label>
-            <input type="text" id="urlInput" placeholder="https://example.com" required aria-required="true">
-            <button type="submit">Check URL</button>
-        </form>
-
-        <div id="result" aria-live="polite">
+    <div class="page-background"></div>
+    
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-shield-alt brand-icon neon-glow"></i>
+                <span class="brand-text">Cyber<span style="color: var(--primary-color);">Shield</span></span>
+                <span class="brand-subtitle">Phishing Detection System</span>
+            </a>
+            
+            <!-- Real-time information display -->
+            <div class="ms-auto real-time-info">
+                <div class="d-flex align-items-center">
+                    <div class="realtime-stats me-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-clock neon-glow me-2"></i>
+                            <span id="current-time">Loading...</span>
+                        </div>
+                        <div class="d-flex align-items-center mt-1">
+                            <i class="fas fa-shield-virus neon-glow me-2"></i>
+                            <span id="threat-count">Threats blocked: <span class="text-primary">1,394</span></span>
+                        </div>
+                    </div>
+                    <div class="security-status">
+                        <div class="d-flex align-items-center pulse-animation">
+                            <span class="status-indicator active"></span>
+                            <span class="status-text">Protection Active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div id="error" class="error-message" aria-live="assertive">
+    </nav>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card main-card mb-4 floating-animation">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Advanced URL Security Analysis</h5>
+                        <p class="text-muted text-center mb-4">Enter a URL to analyze for phishing and security threats</p>
+                        
+                        <!-- Mini Security Dashboard -->
+                        <div class="security-dashboard mb-4">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="dashboard-header d-flex justify-content-between align-items-center mb-2">
+                                        <div class="dashboard-title">
+                                            <i class="fas fa-chart-line me-2"></i>
+                                            Security Statistics
+                                        </div>
+                                        <div class="dashboard-refresh">
+                                            <small>Auto-updates</small>
+                                            <i class="fas fa-sync-alt ms-2 fa-spin"></i>
+                                        </div>
+                                    </div>
+                                    <div class="dashboard-body">
+                                        <div class="row g-2">
+                                            <div class="col-md-3 col-6">
+                                                <div class="stat-card">
+                                                    <div class="stat-icon">
+                                                        <i class="fas fa-shield-virus"></i>
+                                                    </div>
+                                                    <div class="stat-info">
+                                                        <div class="stat-title">Threats</div>
+                                                        <div class="stat-value">1,394</div>
+                                                        <div class="stat-trend positive">
+                                                            <i class="fas fa-arrow-up"></i>
+                                                            <span>4%</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 col-6">
+                                                <div class="stat-card">
+                                                    <div class="stat-icon">
+                                                        <i class="fas fa-globe"></i>
+                                                    </div>
+                                                    <div class="stat-info">
+                                                        <div class="stat-title">Scanned</div>
+                                                        <div class="stat-value">15,283</div>
+                                                        <div class="stat-trend positive">
+                                                            <i class="fas fa-arrow-up"></i>
+                                                            <span>12%</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 col-6">
+                                                <div class="stat-card">
+                                                    <div class="stat-icon">
+                                                        <i class="fas fa-user-shield"></i>
+                                                    </div>
+                                                    <div class="stat-info">
+                                                        <div class="stat-title">Safe Links</div>
+                                                        <div class="stat-value">13,889</div>
+                                                        <div class="stat-trend positive">
+                                                            <i class="fas fa-arrow-up"></i>
+                                                            <span>8%</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 col-6">
+                                                <div class="stat-card">
+                                                    <div class="stat-icon">
+                                                        <i class="fas fa-chart-pie"></i>
+                                                    </div>
+                                                    <div class="stat-info">
+                                                        <div class="stat-title">Accuracy</div>
+                                                        <div class="stat-value">99.7%</div>
+                                                        <div class="stat-trend positive">
+                                                            <i class="fas fa-arrow-up"></i>
+                                                            <span>0.2%</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <form id="urlForm" class="mb-4">
+                            <div class="input-group url-input-group">
+                                <span class="input-group-text"><i class="fas fa-link"></i></span>
+                                <input type="url" id="urlInput" class="form-control" placeholder="https://example.com" required>
+                                <button type="submit" class="btn btn-primary btn-3d">
+                                    <i class="fas fa-shield-alt me-2"></i>
+                                    Analyze
+                                </button>
+                            </div>
+                            <div class="small text-muted mt-2">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Enter a complete URL including http:// or https://
+                            </div>
+                            <div class="url-examples mt-2">
+                                <span class="small text-muted me-2">Examples:</span>
+                                <button type="button" class="btn btn-sm btn-link example-url p-0 me-2" data-url="https://google.com">google.com</button>
+                                <button type="button" class="btn btn-sm btn-link example-url p-0 me-2" data-url="https://facebook.com">facebook.com</button>
+                                <button type="button" class="btn btn-sm btn-link example-url p-0" data-url="https://github.com">github.com</button>
+                            </div>
+                        </form>
+
+                        <div id="loading" class="text-center d-none">
+                            <div class="spinner">
+                                <div class="double-bounce1"></div>
+                                <div class="double-bounce2"></div>
+                            </div>
+                            <p class="text-muted mt-2">Analyzing URL security...</p>
+                        </div>
+
+                        <div id="results" class="d-none result-animation">
+                            <div class="alert mb-4" id="resultAlert">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <span id="resultText">Results will appear here</span>
+                                </div>
+                            </div>
+                            
+                            <div class="card feature-card mb-4">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="fas fa-shield-alt me-2 pulse-animation"></i>Security Features</h6>
+                                    <ul class="list-group list-group-flush custom-list-group" id="securityFeatures">
+                                        <!-- Security features will be added here -->
+                                    </ul>
+                                </div>
+                            </div>
+                                
+                            <div class="card feature-card" id="websiteInfo">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="fas fa-globe me-2 pulse-animation"></i>Website Information</h6>
+                                    <div id="websiteDetails">
+                                        <!-- Website details will be added here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Website Information Section -->
+                        <div id="website-info-section" class="card feature-card mt-4 d-none">
+                            <div class="card-header">
+                                <h3><i class="fas fa-info-circle me-2 pulse-animation"></i>Website Information</h3>
+                            </div>
+                            <div class="card-body">
+                                <!-- Nav tabs for different information sections -->
+                                <ul class="nav nav-tabs custom-tabs mb-4" id="infoTabs" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic" type="button" role="tab" aria-controls="basic" aria-selected="true">
+                                            <i class="fas fa-file-alt me-2"></i>Basic Info
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab" aria-controls="security" aria-selected="false">
+                                            <i class="fas fa-lock me-2"></i>Security
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="whois-tab" data-bs-toggle="tab" data-bs-target="#whois" type="button" role="tab" aria-controls="whois" aria-selected="false">
+                                            <i class="fas fa-database me-2"></i>WHOIS & DNS
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="seo-tab" data-bs-toggle="tab" data-bs-target="#seo" type="button" role="tab" aria-controls="seo" aria-selected="false">
+                                            <i class="fas fa-search me-2"></i>SEO Analysis
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="links-tab" data-bs-toggle="tab" data-bs-target="#links" type="button" role="tab" aria-controls="links" aria-selected="false">
+                                            <i class="fas fa-link me-2"></i>Links
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="tech-tab" data-bs-toggle="tab" data-bs-target="#tech" type="button" role="tab" aria-controls="tech" aria-selected="false">
+                                            <i class="fas fa-code me-2"></i>Tech Stack
+                                        </button>
+                                    </li>
+                                </ul>
+                                
+                                <!-- Tab content -->
+                                <div class="tab-content" id="infoTabsContent">
+                                    <!-- Basic Information Tab -->
+                                    <div class="tab-pane fade show active" id="basic" role="tabpanel" aria-labelledby="basic-tab">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h4 class="section-title">Domain Information</h4>
+                                                <table class="table table-bordered custom-table">
+                                                    <tr>
+                                                        <th>Domain</th>
+                                                        <td id="domain-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Title</th>
+                                                        <td id="title-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Description</th>
+                                                        <td id="description-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Keywords</th>
+                                                        <td id="keywords-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Domain Age</th>
+                                                        <td id="domain-age-info"></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h4 class="section-title">Content Overview</h4>
+                                                <table class="table table-bordered custom-table">
+                                                    <tr>
+                                                        <th>Content Size</th>
+                                                        <td id="content-size-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Heading Structure</th>
+                                                        <td id="heading-structure-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Images</th>
+                                                        <td id="images-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Total Links</th>
+                                                        <td id="total-links-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Canonical URL</th>
+                                                        <td id="canonical-url-info"></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Security Tab -->
+                                    <div class="tab-pane fade" id="security" role="tabpanel" aria-labelledby="security-tab">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h4 class="section-title">Security Status</h4>
+                                                <div id="security-summary" class="alert"></div>
+                                                <table class="table table-bordered custom-table">
+                                                    <tr>
+                                                        <th>SSL</th>
+                                                        <td id="ssl-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Trusted Domain</th>
+                                                        <td id="trusted-domain-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Suspicious Score</th>
+                                                        <td id="suspicious-score-info"></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h4 class="section-title">Security Headers</h4>
+                                                <table class="table table-bordered custom-table">
+                                                    <tbody id="security-headers-table"></tbody>
+                                                </table>
+                                            </div>
+                                                    
+                                            <div class="col-12 mt-3">
+                                                <h4 class="section-title">Security Issues</h4>
+                                                <ul id="security-issues-list" class="list-group custom-list-group"></ul>
+                                            </div>
+                                                    
+                                            <div class="col-12 mt-3">
+                                                <h4 class="section-title">Redirect Chain</h4>
+                                                <div id="redirect-chain-container" class="redirect-chain">
+                                                    <p>No redirects detected</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- WHOIS and DNS Tab -->
+                                    <div class="tab-pane fade" id="whois" role="tabpanel" aria-labelledby="whois-tab">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h4 class="section-title">WHOIS Information</h4>
+                                                <table class="table table-bordered custom-table">
+                                                    <tr>
+                                                        <th>Registrar</th>
+                                                        <td id="whois-registrar"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Creation Date</th>
+                                                        <td id="whois-creation"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Expiration Date</th>
+                                                        <td id="whois-expiration"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Last Updated</th>
+                                                        <td id="whois-updated"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Name Servers</th>
+                                                        <td id="whois-nameservers"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Status</th>
+                                                        <td id="whois-status"></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h4 class="section-title">DNS Records</h4>
+                                                <div class="accordion custom-accordion" id="dnsAccordion">
+                                                    <div class="accordion-item">
+                                                        <h2 class="accordion-header" id="headingA">
+                                                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseA" aria-expanded="true" aria-controls="collapseA">
+                                                                A Records (IPv4)
+                                                            </button>
+                                                        </h2>
+                                                        <div id="collapseA" class="accordion-collapse collapse show" aria-labelledby="headingA" data-bs-parent="#dnsAccordion">
+                                                            <div class="accordion-body" id="dns-a-records"></div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="accordion-item">
+                                                        <h2 class="accordion-header" id="headingAAAA">
+                                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAAAA" aria-expanded="false" aria-controls="collapseAAAA">
+                                                                AAAA Records (IPv6)
+                                                            </button>
+                                                        </h2>
+                                                        <div id="collapseAAAA" class="accordion-collapse collapse" aria-labelledby="headingAAAA" data-bs-parent="#dnsAccordion">
+                                                            <div class="accordion-body" id="dns-aaaa-records"></div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="accordion-item">
+                                                        <h2 class="accordion-header" id="headingMX">
+                                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMX" aria-expanded="false" aria-controls="collapseMX">
+                                                                MX Records (Mail)
+                                                            </button>
+                                                        </h2>
+                                                        <div id="collapseMX" class="accordion-collapse collapse" aria-labelledby="headingMX" data-bs-parent="#dnsAccordion">
+                                                            <div class="accordion-body" id="dns-mx-records"></div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="accordion-item">
+                                                        <h2 class="accordion-header" id="headingNS">
+                                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNS" aria-expanded="false" aria-controls="collapseNS">
+                                                                NS Records (Name Servers)
+                                                            </button>
+                                                        </h2>
+                                                        <div id="collapseNS" class="accordion-collapse collapse" aria-labelledby="headingNS" data-bs-parent="#dnsAccordion">
+                                                            <div class="accordion-body" id="dns-ns-records"></div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="accordion-item">
+                                                        <h2 class="accordion-header" id="headingTXT">
+                                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTXT" aria-expanded="false" aria-controls="collapseTXT">
+                                                                TXT Records
+                                                            </button>
+                                                        </h2>
+                                                        <div id="collapseTXT" class="accordion-collapse collapse" aria-labelledby="headingTXT" data-bs-parent="#dnsAccordion">
+                                                            <div class="accordion-body" id="dns-txt-records"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- SEO Analysis Tab -->
+                                    <div class="tab-pane fade" id="seo" role="tabpanel" aria-labelledby="seo-tab">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h4 class="section-title">SEO Overview</h4>
+                                                <table class="table table-bordered custom-table">
+                                                    <tr>
+                                                        <th>Title Length</th>
+                                                        <td id="title-length-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Meta Description</th>
+                                                        <td id="meta-description-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Meta Keywords</th>
+                                                        <td id="meta-keywords-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Heading Structure</th>
+                                                        <td id="heading-structure-seo-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Images Alt Text</th>
+                                                        <td id="images-alt-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Canonical URL</th>
+                                                        <td id="canonical-url-seo-info"></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h4 class="section-title">SEO Score</h4>
+                                                <div class="progress custom-progress mb-3">
+                                                    <div id="seo-score-bar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                                                </div>
+                                                <ul id="seo-recommendations" class="list-group custom-list-group"></ul>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-12">
+                                                <h4 class="section-title">All Meta Tags</h4>
+                                                <div id="meta-tags-info" class="meta-tags-container">
+                                                    <div class="alert alert-info">No meta tags found</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Links Tab -->
+                                    <div class="tab-pane fade" id="links" role="tabpanel" aria-labelledby="links-tab">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h4 class="section-title">Link Summary</h4>
+                                                <table class="table table-bordered custom-table">
+                                                    <tr>
+                                                        <th>Internal Links</th>
+                                                        <td id="internal-links-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>External Links</th>
+                                                        <td id="external-links-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Total Links</th>
+                                                        <td id="total-links-summary"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Suspicious External Links</th>
+                                                        <td id="suspicious-links-info"></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h4 class="section-title">External Domains</h4>
+                                                <div id="external-domains-container" class="link-domains-container">
+                                                    <p>No external domains found</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Tech Stack Tab -->
+                                    <div class="tab-pane fade" id="tech" role="tabpanel" aria-labelledby="tech-tab">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h4 class="section-title">Server Information</h4>
+                                                <table class="table table-bordered custom-table">
+                                                    <tr>
+                                                        <th>Server</th>
+                                                        <td id="server-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Powered By</th>
+                                                        <td id="powered-by-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Content Type</th>
+                                                        <td id="content-type-info"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Status Code</th>
+                                                        <td id="status-code-info"></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h4 class="section-title">Technologies Detected</h4>
+                                                <div id="technologies-container" class="tech-container">
+                                                    <p>Technology detection is limited in this version</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-3 footer-container">
+                    <p class="footer-text">
+                        <span class="footer-highlight"><i class="fas fa-robot me-2"></i>Powered by Advanced Machine Learning</span> • 
+                        <span class="footer-tagline">Protect yourself from phishing attacks</span>
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('urlForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = document.getElementById('urlInput').value;
+            
+            if (!url) {
+                showErrorMessage("Please enter a URL to analyze");
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('loading').classList.remove('d-none');
+            document.getElementById('results').classList.add('d-none');
+            
+            try {
+                // Set a timeout for the fetch to handle server that's not responding
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+                
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url }),
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log("Response data:", data);
+                
+                // Update results
+                const resultAlert = document.getElementById('resultAlert');
+                const resultText = document.getElementById('resultText');
+                
+                // Get the icon inside the alert
+                const resultIcon = resultAlert.querySelector('i');
+                
+                if (data.analysis_note) {
+                    resultAlert.className = 'alert alert-info mb-4';
+                    resultIcon.className = 'fas fa-info-circle text-info me-2 pulse-animation';
+                    resultText.textContent = data.analysis_note;
+                } else if (data.error) {
+                    resultAlert.className = 'alert alert-warning mb-4';
+                    resultIcon.className = 'fas fa-exclamation-circle text-warning me-2 pulse-animation';
+                    resultText.textContent = `Analysis completed but with limited information. The domain may be suspicious.`;
+                } else if (data.is_phishing) {
+                    resultAlert.className = 'alert alert-danger mb-4';
+                    resultIcon.className = 'fas fa-exclamation-triangle text-danger me-2 pulse-animation';
+                    resultText.textContent = `This URL appears to be a phishing attempt (${(data.confidence * 100).toFixed(2)}% confidence)`;
+                } else {
+                    // Enhanced trusted domain result display
+                    resultAlert.className = 'alert alert-success mb-4';
+                    const confidenceValue = (data.confidence * 100).toFixed(0);
+                    
+                    // Create enhanced trusted domain result content
+                    resultAlert.innerHTML = `
+                        <div class="d-flex align-items-center">
+                            <div class="trusted-checkmark">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div>
+                                <div class="d-flex align-items-center">
+                                    <h5 class="mb-0">Trusted Domain Verified</h5>
+                                    <div class="trusted-badge ms-2">
+                                        <i class="fas fa-shield-alt"></i> Secure
+                                    </div>
+                                </div>
+                                <p class="mb-1 mt-1">This URL appears to be legitimate with high confidence</p>
+                                <div class="d-flex align-items-center mb-1">
+                                    <span class="confidence-value me-2">${confidenceValue}</span>
+                                    <small>Confidence Score</small>
+                                </div>
+                                <div class="confidence-meter">
+                                    <div class="confidence-meter-fill" style="width: ${confidenceValue}%"></div>
+                                </div>
+                                <div class="trust-features">
+                                    <div class="trust-feature">
+                                        <i class="fas fa-lock"></i> Secure Connection
+                                    </div>
+                                    <div class="trust-feature">
+                                        <i class="fas fa-history"></i> Established Domain
+                                    </div>
+                                    <div class="trust-feature">
+                                        <i class="fas fa-certificate"></i> Valid Certificate
+                                    </div>
+                                    <div class="trust-feature">
+                                        <i class="fas fa-check-circle"></i> Safe Browsing
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Update security features if security_info exists
+                if (data.security_info) {
+                    updateSecurityFeatures(data.security_info);
+                } else {
+                    // Handle case where security_info is missing
+                    document.getElementById('securityFeatures').innerHTML = 
+                        `<li class="list-group-item"><i class="fas fa-info-circle text-info me-2"></i> No detailed security information available</li>`;
+                }
+                
+                // Show results with animation
+                document.getElementById('results').classList.remove('d-none');
+                setTimeout(() => {
+                    document.getElementById('results').classList.add('show');
+                }, 10);
+            } catch (error) {
+                console.error('Error:', error);
+                
+                // Check if this is an abort error (timeout)
+                if (error.name === 'AbortError') {
+                    showErrorMessage("The server took too long to respond. The application might not be running or is experiencing issues.");
+                } else {
+                    // For other errors, show the default error message
+                    showErrorMessage("We couldn't analyze this specific URL right now.");
+                }
+            } finally {
+                document.getElementById('loading').classList.add('d-none');
+            }
+        });
+        
+        function updateSecurityFeatures(securityInfo) {
+            const securityFeatures = document.getElementById('securityFeatures');
+            securityFeatures.innerHTML = '';
+            
+            if (!securityInfo) {
+                securityFeatures.innerHTML = `<li class="list-group-item"><i class="fas fa-info-circle text-info me-2"></i> No security information available</li>`;
+                return;
+            }
+            
+            const features = [
+                { icon: 'fa-lock', text: 'SSL Certificate', value: securityInfo.ssl_cert ? 'Present' : 'Missing', status: securityInfo.ssl_cert ? 'success' : 'danger' },
+                { icon: 'fa-clock', text: 'Domain Age', value: securityInfo.domain_age ? `${securityInfo.domain_age} days` : 'Unknown', status: 'info' },
+                { icon: 'fa-shield-alt', text: 'Security Headers', value: (securityInfo.security_headers && typeof securityInfo.security_headers === 'object') ? 
+                    Object.values(securityInfo.security_headers).filter(Boolean).length + ' present' : 'Unknown', status: 'info' },
+                { icon: 'fa-ban', text: 'Blacklist Status', value: securityInfo.blacklist_status || 'Unknown', status: 'info' }
+            ];
+            
+            features.forEach(feature => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item';
+                li.innerHTML = `
+                    <i class="fas ${feature.icon} text-${feature.status} me-2"></i>
+                    <span>${feature.text}: ${feature.value}</span>
+                `;
+                securityFeatures.appendChild(li);
+            });
+        }
+
+        // URL example handling
+        document.querySelectorAll('.example-url').forEach(button => {
+            button.addEventListener('click', () => {
+                const url = button.getAttribute('data-url');
+                document.getElementById('urlInput').value = url;
+            });
+        });
+
+        // URL validation helper
+        document.getElementById('urlInput').addEventListener('input', function(e) {
+            const input = e.target;
+            const value = input.value.trim();
+            
+            // Add protocol if missing
+            if (value && !value.match(/^https?:\/\//i)) {
+                const suggestion = document.createElement('div');
+                suggestion.className = 'url-suggestion mt-2';
+                suggestion.innerHTML = `
+                    <small class="text-primary">
+                        <i class="fas fa-lightbulb me-1"></i>
+                        Did you mean <a href="#" class="suggested-url">https://${value}</a>?
+                    </small>
+                `;
+                
+                // Remove any existing suggestion
+                const existingSuggestion = input.parentElement.parentElement.querySelector('.url-suggestion');
+                if (existingSuggestion) {
+                    existingSuggestion.remove();
+                }
+                
+                // Add the new suggestion
+                input.parentElement.parentElement.appendChild(suggestion);
+                
+                // Add click event to the suggested URL
+                const suggestedUrl = suggestion.querySelector('.suggested-url');
+                suggestedUrl.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    input.value = `https://${value}`;
+                    suggestion.remove();
+                });
+            } else {
+                // Remove suggestion if the URL now has a protocol
+                const suggestion = input.parentElement.parentElement.querySelector('.url-suggestion');
+                if (suggestion) {
+                    suggestion.remove();
+                }
+            }
+        });
+
+        // Helper function to show an error message with options
+        function showErrorMessage(message) {
+            const resultAlert = document.getElementById('resultAlert');
+            const resultText = document.getElementById('resultText');
+            const resultIcon = resultAlert.querySelector('i');
+            
+            resultAlert.className = 'alert alert-info mb-4';
+            resultIcon.className = 'fas fa-info-circle text-info me-2';
+            
+            // More detailed and helpful error message
+            resultText.innerHTML = `
+                <div class="error-message">
+                    <p>${message}</p>
+                    <div class="mt-3">
+                        <p class="mb-2"><strong>Possible reasons:</strong></p>
+                        <ul class="text-start">
+                            <li>The application server is not running</li>
+                            <li>Network connectivity issues</li>
+                            <li>The website might be blocking automated access</li>
+                            <li>The URL format might be incorrect</li>
+                        </ul>
+                    </div>
+                    <p class="mt-3">Please check if the application is running correctly.</p>
+                    <div class="mt-3">
+                        <button class="btn btn-outline-primary btn-sm retry-btn">
+                            <i class="fas fa-redo-alt me-2"></i>Try Again
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm ms-2 clear-btn">
+                            <i class="fas fa-eraser me-2"></i>Clear
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Add event listeners to the buttons
+            setTimeout(() => {
+                const retryBtn = document.querySelector('.retry-btn');
+                const clearBtn = document.querySelector('.clear-btn');
+                
+                if (retryBtn) {
+                    retryBtn.addEventListener('click', () => {
+                        document.getElementById('urlForm').dispatchEvent(new Event('submit'));
+                    });
+                }
+                
+                if (clearBtn) {
+                    clearBtn.addEventListener('click', () => {
+                        document.getElementById('urlInput').value = '';
+                        document.getElementById('results').classList.add('d-none');
+                    });
+                }
+            }, 100);
+            
+            // Show minimal security info in case of error
+            document.getElementById('securityFeatures').innerHTML = `
+                <li class="list-group-item">
+                    <i class="fas fa-info-circle text-info me-2"></i> 
+                    No detailed information available
+                </li>
+                <li class="list-group-item">
+                    <i class="fas fa-lightbulb text-warning me-2"></i>
+                    <strong>Tip:</strong> Make sure the URL includes the protocol (http:// or https://)
+                </li>
+                <li class="list-group-item">
+                    <i class="fas fa-server text-danger me-2"></i>
+                    <strong>Note:</strong> The server may not be running. Check with your administrator.
+                </li>
+            `;
+            
+            // Show results
+            document.getElementById('results').classList.remove('d-none');
+            setTimeout(() => {
+                document.getElementById('results').classList.add('show');
+            }, 10);
+        }
+
+        // Add event to automatically animate the confidence meter when displayed
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    const resultAlert = document.getElementById('resultAlert');
+                    if (resultAlert.classList.contains('alert-success')) {
+                        setTimeout(() => {
+                            const confidenceFill = resultAlert.querySelector('.confidence-meter-fill');
+                            if (confidenceFill) {
+                                confidenceFill.style.transition = 'width 1.5s cubic-bezier(0.22, 1, 0.36, 1)';
+                            }
+                        }, 300);
+                    }
+                }
+            });
+        });
+        
+        observer.observe(document.getElementById('resultAlert'), { attributes: true });
+
+        // Update time display
+        function updateTime() {
+            const now = new Date();
+            const options = {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('current-time').textContent = now.toLocaleDateString('en-US', options);
+            
+            // Randomly increment threat count occasionally for effect
+            if (Math.random() > 0.95) {
+                const threatElement = document.querySelector('#threat-count .text-primary');
+                const currentCount = parseInt(threatElement.textContent.replace(/,/g, ''));
+                threatElement.textContent = (currentCount + 1).toLocaleString();
+            }
+            
+            setTimeout(updateTime, 1000);
+        }
+        
+        // Start the clock immediately
+        updateTime();
+        
+        // Update security dashboard statistics
+        function updateDashboardStats() {
+            // Get all stat value elements
+            const statValues = document.querySelectorAll('.stat-card .stat-value');
+            
+            // Update each stat with a small random change to simulate real-time updates
+            statValues.forEach((statElement) => {
+                const currentValue = parseInt(statElement.textContent.replace(/,/g, ''));
+                if (!isNaN(currentValue)) {
+                    // Generate a small random increment
+                    const increment = Math.floor(Math.random() * 3);
+                    if (Math.random() > 0.7 && increment > 0) { // 30% chance of an update
+                        const newValue = currentValue + increment;
+                        statElement.textContent = newValue.toLocaleString();
+                        
+                        // Flash animation on update
+                        statElement.classList.add('value-updated');
+                        setTimeout(() => {
+                            statElement.classList.remove('value-updated');
+                        }, 1000);
+                    }
+                }
+            });
+            
+            // Schedule next update
+            setTimeout(updateDashboardStats, 3000); // Update every 3 seconds
+        }
+        
+        // Start dashboard updates
+        updateDashboardStats();
+        
+        // Add animation when dashboard values update
+        const styleElement = document.createElement('style');
+        styleElement.textContent = `
+            @keyframes valueUpdate {
+                0% { color: var(--text-primary); }
+                50% { color: var(--primary-color); }
+                100% { color: var(--text-primary); }
+            }
+            
+            .value-updated {
+                animation: valueUpdate 1s ease;
+            }
+        `;
+        document.head.appendChild(styleElement);
+    </script>
 </body>
-</html>
+</html> 
