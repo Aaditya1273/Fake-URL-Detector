@@ -1,4 +1,4 @@
-# URL Phishing Detector
+# FAKE URL DETECTOR
 
 A modern web application that analyzes URLs to detect potential phishing attempts using machine learning and security features analysis.
 
