@@ -1,10 +1,8 @@
-from flask import Flask, request, jsonify, render_template
+from http.server import BaseHTTPRequestHandler
+import json
 import re
 from urllib.parse import urlparse
 import os
-import json
-
-app = Flask(__name__, template_folder='../templates', static_folder='../static')
 
 # List of common trusted domains
 TRUSTED_DOMAINS = [
@@ -14,23 +12,28 @@ TRUSTED_DOMAINS = [
     'dropbox.com', 'gmail.com', 'outlook.com', 'yahoo.com'
 ]
 
-@app.route('/')
-def home():
-    return render_template('index.html')
+def create_default_security_info():
+    return {
+        'ssl_cert': False,
+        'domain_age': 'Unknown',
+        'security_headers': {
+            'Strict-Transport-Security': False,
+            'X-Content-Type-Options': False,
+            'X-Frame-Options': False,
+            'Content-Security-Policy': False
+        },
+        'blacklist_status': 'Unknown'
+    }
 
-@app.route('/analyze', methods=['POST'])
-def analyze():
+def analyze_url(url):
     try:
-        data = request.get_json()
-        url = data.get('url', '').strip()
-        
         if not url:
-            return jsonify({
+            return {
                 'is_phishing': False,
                 'confidence': 0.5,
                 'analysis_note': 'Please enter a valid URL',
                 'security_info': create_default_security_info()
-            })
+            }
         
         # Make sure URL has scheme
         if not url.startswith('http'):
@@ -47,18 +50,17 @@ def analyze():
             domain = domain.split(':')[0]
         
         if not domain:
-            return jsonify({
+            return {
                 'is_phishing': False,
                 'confidence': 0.5,
                 'analysis_note': 'Invalid URL format. Please include a domain (e.g., example.com)',
                 'security_info': create_default_security_info()
-            })
+            }
         
         # First check if this is an exact match to a trusted domain
-        # This must happen before pattern matching to prevent false positives
         for trusted in TRUSTED_DOMAINS:
             if domain == trusted.lower():
-                return jsonify({
+                return {
                     'is_phishing': False,
                     'confidence': 0.95,
                     'analysis_note': 'This appears to be a trusted domain',
@@ -73,7 +75,7 @@ def analyze():
                         },
                         'blacklist_status': 'Not blacklisted'
                     }
-                })
+                }
         
         # Very simple analysis based on domain patterns
         suspicious_patterns = [
@@ -90,7 +92,7 @@ def analyze():
         # Check for obvious phishing signs
         for pattern in suspicious_patterns:
             if re.search(pattern, domain, re.IGNORECASE) and not any(trusted in domain for trusted in TRUSTED_DOMAINS):
-                return jsonify({
+                return {
                     'is_phishing': True,
                     'confidence': 0.85,
                     'analysis_note': 'This domain appears to be mimicking a trusted site',
@@ -100,10 +102,10 @@ def analyze():
                         'security_headers': {},
                         'blacklist_status': 'Potentially suspicious'
                     }
-                })
+                }
         
         # For other domains, provide a neutral response
-        return jsonify({
+        return {
             'is_phishing': False,
             'confidence': 0.60,
             'analysis_note': 'This domain does not match known phishing patterns, but we recommend caution',
@@ -118,33 +120,41 @@ def analyze():
                 },
                 'blacklist_status': 'Not on known blacklists'
             }
-        })
+        }
         
     except Exception as e:
-        print(f"Error: {str(e)}")
-        return jsonify({
+        return {
             'is_phishing': False,
             'confidence': 0.5,
             'analysis_note': f'Error analyzing URL: {str(e)}',
             'security_info': create_default_security_info()
-        })
+        }
 
-def create_default_security_info():
-    return {
-        'ssl_cert': False,
-        'domain_age': 'Unknown',
-        'security_headers': {
-            'Strict-Transport-Security': False,
-            'X-Content-Type-Options': False,
-            'X-Frame-Options': False,
-            'Content-Security-Policy': False
-        },
-        'blacklist_status': 'Unknown'
-    }
-
-# This is for local development
-if __name__ == '__main__':
-    app.run(debug=True)
-    
-# For Vercel serverless function
-app.debug = False
+# Vercel serverless function handler
+class handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
+        
+        with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates', 'index.html'), 'r') as f:
+            html_content = f.read()
+            
+        self.wfile.write(html_content.encode())
+        
+    def do_POST(self):
+        if self.path == '/analyze':
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+            data = json.loads(post_data.decode())
+            
+            url = data.get('url', '').strip()
+            result = analyze_url(url)
+            
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(result).encode())
+        else:
+            self.send_response(404)
+            self.end_headers()
