@@ -4,6 +4,11 @@ import re
 from urllib.parse import urlparse
 import os
 import mimetypes
+import sys
+
+# Add debug logging
+def log_debug(message):
+    print(f"[DEBUG] {message}", file=sys.stderr)
 
 # List of common trusted domains
 TRUSTED_DOMAINS = [
@@ -131,10 +136,18 @@ def analyze_url(url):
             'security_info': create_default_security_info()
         }
 
+# Function to replace Flask template variables in HTML files
+def replace_template_vars(content):
+    # Replace "{{ url_for('static', filename='xyz') }}" with "/static/xyz"
+    content = re.sub(r"{{\s*url_for\('static',\s*filename='([^']*)'\)\s*}}", r"/static/\1", content)
+    return content
+
 # Vercel serverless function handler
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         path = self.path
+        
+        log_debug(f"Received request for path: {path}")
         
         # Default to index.html
         if path == '/' or path == '':
@@ -143,16 +156,20 @@ class handler(BaseHTTPRequestHandler):
         # Determine the file path
         if path.startswith('/static/'):
             file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), path[1:])
+            log_debug(f"Serving static file from: {file_path}")
         elif path == '/index.html':
             file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates', 'index.html')
+            log_debug(f"Serving index.html from: {file_path}")
         else:
             # Try to find the file in static directory
             potential_static_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', path[1:])
             if os.path.exists(potential_static_path):
                 file_path = potential_static_path
+                log_debug(f"Serving file from static directory: {file_path}")
             else:
                 # Default to index.html for any other path
                 file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates', 'index.html')
+                log_debug(f"Path not found, defaulting to index.html: {file_path}")
         
         # Check if file exists
         if os.path.exists(file_path):
@@ -166,27 +183,38 @@ class handler(BaseHTTPRequestHandler):
                 else:
                     content_type = 'text/plain'
             
+            log_debug(f"Serving file with content type: {content_type}")
             self.send_response(200)
             self.send_header('Content-type', content_type)
             self.end_headers()
             
-            # Read and send file content
+            # Read file content
             with open(file_path, 'rb') as f:
-                self.wfile.write(f.read())
+                content = f.read()
+            
+            # Process HTML files to replace template variables
+            if file_path.endswith('.html'):
+                log_debug("Processing HTML template variables")
+                content = replace_template_vars(content.decode()).encode()
+            
+            # Send processed content
+            self.wfile.write(content)
         else:
-            # File not found
+            log_debug(f"File not found: {file_path}")
             self.send_response(404)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             self.wfile.write(b'File not found')
         
     def do_POST(self):
+        log_debug(f"Received POST request for path: {self.path}")
         if self.path == '/analyze':
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length)
             data = json.loads(post_data.decode())
             
             url = data.get('url', '').strip()
+            log_debug(f"Analyzing URL: {url}")
             result = analyze_url(url)
             
             self.send_response(200)
@@ -194,5 +222,6 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps(result).encode())
         else:
+            log_debug(f"Invalid POST endpoint: {self.path}")
             self.send_response(404)
             self.end_headers()
