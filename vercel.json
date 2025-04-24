@@ -21,6 +21,10 @@
     }
   ],
   "env": {
-    "PYTHONUNBUFFERED": "1"
+    "PYTHONUNBUFFERED": "1",
+    "FLASK_APP": "index.py",
+    "FLASK_ENV": "production",
+    "PYTHONPATH": ".",
+    "FLASK_DEBUG": "0"
   }
 }
