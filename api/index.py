@@ -3,6 +3,7 @@ import json
 import re
 from urllib.parse import urlparse
 import os
+import mimetypes
 
 # List of common trusted domains
 TRUSTED_DOMAINS = [
@@ -133,14 +134,51 @@ def analyze_url(url):
 # Vercel serverless function handler
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
+        path = self.path
         
-        with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates', 'index.html'), 'r') as f:
-            html_content = f.read()
+        # Default to index.html
+        if path == '/' or path == '':
+            path = '/index.html'
             
-        self.wfile.write(html_content.encode())
+        # Determine the file path
+        if path.startswith('/static/'):
+            file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), path[1:])
+        elif path == '/index.html':
+            file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates', 'index.html')
+        else:
+            # Try to find the file in static directory
+            potential_static_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', path[1:])
+            if os.path.exists(potential_static_path):
+                file_path = potential_static_path
+            else:
+                # Default to index.html for any other path
+                file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates', 'index.html')
+        
+        # Check if file exists
+        if os.path.exists(file_path):
+            # Determine content type
+            content_type, _ = mimetypes.guess_type(file_path)
+            if content_type is None:
+                if file_path.endswith('.js'):
+                    content_type = 'application/javascript'
+                elif file_path.endswith('.css'):
+                    content_type = 'text/css'
+                else:
+                    content_type = 'text/plain'
+            
+            self.send_response(200)
+            self.send_header('Content-type', content_type)
+            self.end_headers()
+            
+            # Read and send file content
+            with open(file_path, 'rb') as f:
+                self.wfile.write(f.read())
+        else:
+            # File not found
+            self.send_response(404)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            self.wfile.write(b'File not found')
         
     def do_POST(self):
         if self.path == '/analyze':
