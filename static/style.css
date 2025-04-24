@@ -1,4 +1,4 @@
-/* Modern Tech UI with Deep Blue and Purple Theme */
+/* Modern Tech UI with Black-Orange Theme */
 :root {
   --primary-color: #ff6b00;
   --primary-dark: #cc5500;
@@ -16,7 +16,7 @@
   --text-primary: #ffffff;
   --text-secondary: #cccccc;
   --text-muted: #999999;
-  --text-accent: #ff6b00;
+  --text-accent: #ff7b00;
   --success-color: #4caf50;
   --warning-color: #ff9800;
   --danger-color: #f44336;
@@ -244,6 +244,20 @@ body {
   background-color: var(--bg-light);
   border: 1px solid var(--secondary-light);
   color: var(--primary-color);
+}
+
+.input-group-text.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  border-radius: var(--button-border-radius);
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: all var(--transition-medium);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
 }
 
 /* Button Styles */

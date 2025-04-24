@@ -8,12 +8,31 @@
     {
       "src": "static/**",
       "use": "@vercel/static"
+    },
+    {
+      "src": "templates/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/static/(.*)",
-      "dest": "/static/$1"
+      "dest": "/static/$1",
+      "headers": {
+        "cache-control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "src": "/templates/(.*)",
+      "dest": "/templates/$1"
+    },
+    {
+      "src": "/script.js",
+      "dest": "/static/script.js"
+    },
+    {
+      "src": "/style.css",
+      "dest": "/static/style.css"
     },
     {
       "src": "/(.*)",
