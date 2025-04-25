@@ -86,11 +86,11 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 📌 Features
 
-- 🔍 Detects phishing URLs using trained machine learning models
-- 🧠 Utilizes advanced URL feature extraction techniques
-- ⚙️ Simple, intuitive, and responsive web interface
-- 📊 Displays prediction results and confidence score
-- 🛠️ Built with Python Flask/Django and integrated with HTML/CSS/JS
+- 🔍 Detects phishing URLs using trained machine learning models.
+- 🧠 Utilizes advanced URL feature extraction techniques.
+- ⚙️ Simple, intuitive, and responsive web interface.
+- 📊 Displays prediction results and confidence score.
+- 🛠️ Built with Python Flask/Django and integrated with HTML/CSS/JS.
 
 ---
 
